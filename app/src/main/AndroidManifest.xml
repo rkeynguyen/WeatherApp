@@ -11,6 +11,7 @@
         android:theme="@style/Theme.WeatherApp">
         <activity
             android:name=".ForecastActivity"
+            android:label="@string/forecast"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
