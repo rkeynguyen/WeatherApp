@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -14,18 +16,26 @@ import java.time.format.DateTimeFormatter
 class MyAdapter(private val data: List<DayForecast>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        private val dateView: TextView = view.findViewById(R.id.date)
-        private val tempView: TextView = view.findViewById(R.id.temperature)
-        private val highView: TextView = view.findViewById(R.id.high)
-        private val lowView: TextView = view.findViewById(R.id.low)
-        private val sunriseView: TextView = view.findViewById(R.id.sunrise)
-        private val sunsetView: TextView = view.findViewById(R.id.sunset)
-
+        private var dateView: TextView = view.findViewById(R.id.date)
+        private var tempView: TextView = view.findViewById(R.id.temperature)
+        private var highView: TextView = view.findViewById(R.id.high)
+        private var lowView: TextView = view.findViewById(R.id.low)
+        private var sunriseView: TextView = view.findViewById(R.id.sunrise)
+        private var sunsetView: TextView = view.findViewById(R.id.sunset)
+        private var conditionIcon: ImageView = view.findViewById(R.id.condition_icon)
 
         @SuppressLint("NewApi")
         fun bind(dayForecast: DayForecast){
+            //set up icon
+            val iconName = dayForecast.weather.firstOrNull()?.icon
+            val iconUrl = "https://openweathermap.org/img/wn/${iconName}@2x.png"
+
+            Glide.with(conditionIcon)
+                .load(iconUrl)
+                .into(conditionIcon)
+
             //month and day view
-            var instant = Instant.ofEpochSecond(dayForecast.date)
+            var instant = Instant.ofEpochSecond(dayForecast.dt)
             var dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
             var formatter = DateTimeFormatter.ofPattern("MMM dd")
             dateView.text = formatter.format(dateTime)

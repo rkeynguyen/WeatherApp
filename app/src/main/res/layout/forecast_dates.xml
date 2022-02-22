@@ -10,7 +10,6 @@
         android:layout_height="60dp"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:src="@drawable/sun"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +22,7 @@
         app:layout_constraintBottom_toBottomOf="@id/condition_icon"
         app:layout_constraintTop_toTopOf="@id/condition_icon"
         app:layout_constraintLeft_toRightOf="@id/condition_icon"
-        android:paddingRight="20dp"
+        android:paddingRight="10dp"
         android:textColor="@color/black"
         />
 
