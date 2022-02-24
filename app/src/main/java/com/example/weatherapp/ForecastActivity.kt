@@ -32,7 +32,7 @@ class ForecastActivity : AppCompatActivity() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/forecast/")
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 
