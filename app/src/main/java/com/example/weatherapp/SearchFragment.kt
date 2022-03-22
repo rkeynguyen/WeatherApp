@@ -53,13 +53,18 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.submit.setOnClickListener{
+        binding.submit.setOnClickListener {
             viewModel.submitButtonClicked()
-            if(!viewModel.showErrorDialog.value!!) {
-                val conditions: CurrentConditions = viewModel.currentConditions.value!!
-                val zipCode: String = viewModel.zipCode!!
-                val action = SearchFragmentDirections.searchToCurrent(conditions, zipCode)
-                findNavController().navigate(action)
+            viewModel.showErrorDialog.value?.let {
+                if (!it) {
+                     viewModel.currentConditions.observe(viewLifecycleOwner){ current ->
+                         val conditions: CurrentConditions = current
+                         viewModel.zipCode?.let { zip ->
+                             val action = SearchFragmentDirections.searchToCurrent(conditions, zip)
+                             findNavController().navigate(action) }
+                     }
+
+                }
             }
         }
     }

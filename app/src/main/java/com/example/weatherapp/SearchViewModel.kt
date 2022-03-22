@@ -39,7 +39,8 @@ class SearchViewModel @Inject constructor(private val api : Api): ViewModel() {
 
     fun submitButtonClicked(){
         Log.d(SearchFragment::class.simpleName, zipCode ?: "No Zip Yet")
-        if(zipCode != null && isValidZipCode(zipCode!!)){
+
+        if(zipCode != null && isValidZipCode(zipCode?:"00000")){
             try {
                 loadData()
                 _showErrorDialog.value = false
