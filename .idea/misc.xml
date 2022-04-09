@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Ricky/StudioCode/WeatherApp/app/src/main/res/layout/activity_main.xml" value="0.20244565217391305" />
+        <entry key="..\:/Users/Ricky/StudioCode/WeatherApp/app/src/main/res/layout/fragment_current_conditions.xml" value="0.20244565217391305" />
+        <entry key="..\:/Users/Ricky/StudioCode/WeatherApp/app/src/main/res/layout/fragment_forecast.xml" value="0.1884498480243161" />
+        <entry key="..\:/Users/Ricky/StudioCode/WeatherApp/app/src/main/res/layout/fragment_search.xml" value="0.33" />
         <entry key="..\:/apps/weather/app/src/main/res/layout/activity_forecast.xml" value="0.1" />
         <entry key="..\:/apps/weather/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/apps/weather/app/src/main/res/layout/forecast_dates.xml" value="0.33" />

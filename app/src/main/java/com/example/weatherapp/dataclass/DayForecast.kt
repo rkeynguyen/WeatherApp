@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.dataclass
 
 data class DayForecast(val dt: Long,
                        val sunrise: Long,
