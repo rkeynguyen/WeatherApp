@@ -13,4 +13,7 @@
     <string name="zip_code">ZIP Code</string>
     <string name="submit">SUBMIT</string>
     <string name="ok">OK</string>
+    <string name="location">Use Location</string>
+    <string name="enterZip">Enter a ZIP Code</string>
+    <string name="location_permission_rationale">Location Message</string>
 </resources>

@@ -15,7 +15,16 @@
             app:argType="com.example.weatherapp.dataclass.CurrentConditions"/>
         <argument
             android:name="zipCode"
-            app:argType="string"/>
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="longitude"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="latitude"
+            app:argType="string"
+            app:nullable="true"/>
         <action
             android:id="@+id/current_to_forecast"
             app:destination="@id/forecastFragment" />
@@ -25,9 +34,18 @@
         android:name="com.example.weatherapp.ForecastFragment"
         android:label="fragment_forecast"
         tools:layout="@layout/fragment_forecast">
-    <argument
-        android:name="zipCode"
-        app:argType="string"/>
+        <argument
+            android:name="zipCode"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="longitude"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="latitude"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <fragment

@@ -34,7 +34,13 @@ class ForecastFragment : Fragment() {
         viewModel.forecast.observe(viewLifecycleOwner){
             bindData(it)
         }
-        viewModel.loadData(args.zipCode)
+            args.zipCode?.let {
+                if (it.toInt() > 0) {
+                    viewModel.loadData(it)
+                } else{
+                    args.latitude?.let{ lat -> args.longitude?.let { lon -> viewModel.loadLatLonData(lat, lon) } }
+                }
+            }
     }
     private fun bindData(forecast: Forecast) {
         binding.forecastView.adapter = MyAdapter(forecast.list)
