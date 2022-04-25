@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -20,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.weatherapp.databinding.FragmentSearchBinding
@@ -35,12 +36,19 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     @Inject lateinit var viewModel : SearchViewModel
+
+    //location fields
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUEST_LOCATION_PERMISSION = 100
+
+    //notification fields
     private val CHANNEL_ID = "channel_id"
     private val notificationId = 101
     private var makeNotification = false
     private var notificationsOn = false
+
+    //notification service fields
+    private lateinit var serviceIntent: Intent
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,38 +96,48 @@ class SearchFragment : Fragment() {
                 }
             }
         }
+        //setting up service
+        serviceIntent = Intent(requireContext(), NotificationService::class.java)
+        val broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, p1: Intent?) {
+                //update weather
+                sendNotification()
+            }
+
+        }
+        activity?.registerReceiver(broadcastReceiver, IntentFilter("end"))
+
+
 
         //location button handling
         binding.location.setOnClickListener{
             makeNotification = false
-            //using lon lat so setting zip to an invalid value used for checking
-            viewModel.updateZipCode("-11111")
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                requestLocationPermission()
-            }else{
-                getLocation()
-            }
+            requestOrGetLocation()
         }
 
         //notification button handling
         binding.notification.setOnClickListener{
+
+
             if(!notificationsOn) {
                 makeNotification = true
-                viewModel.updateZipCode("-11111")
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestLocationPermission()
-                } else {
-                    getLocation()
-                }
+                requestOrGetLocation()
             }
             else{
                 cancelNotification()
                 binding.notification.text = "Turn Notifications On"
+                activity?.stopService(serviceIntent)
             }
+        }
+    }
+
+    private fun requestOrGetLocation(){
+        //using lon lat so setting zip to an invalid value used for checking
+        viewModel.updateZipCode("-11111")
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            requestLocationPermission()
+        }else{
+            getLocation()
         }
     }
 
@@ -157,6 +175,8 @@ class SearchFragment : Fragment() {
                         notificationsOn = true
                         binding.notification.text = "Turn Notifications Off"
                         sendNotification()
+                        //send a new notification every 30 minutes
+                        activity?.startService(serviceIntent)
                     } else{
                         viewModel.currentConditions.observe(viewLifecycleOwner) { current ->
                             val action = SearchFragmentDirections.searchToCurrent(
@@ -223,8 +243,8 @@ class SearchFragment : Fragment() {
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        var cityName:String = ""
-        var temp:String = ""
+        var cityName = ""
+        var temp = ""
 
         viewModel.currentConditions.observe(viewLifecycleOwner){ current ->
             cityName = current.name
@@ -233,7 +253,7 @@ class SearchFragment : Fragment() {
         val builder : NotificationCompat.Builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
             .setSmallIcon(R.drawable.sun)
             .setContentTitle("Current Weather")
-            .setStyle(NotificationCompat.BigTextStyle().bigText(temp + "°, "+ cityName))
+            .setStyle(NotificationCompat.BigTextStyle().bigText("$temp°, $cityName"))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
