@@ -3,6 +3,7 @@
     package="com.example.weatherapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".WeatherApplication"
@@ -12,10 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp">
-        <activity
-            android:name=".ForecastActivity"
-            android:label="@string/forecast"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

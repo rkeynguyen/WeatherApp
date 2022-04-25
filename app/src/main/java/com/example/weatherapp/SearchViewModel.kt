@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.example.weatherapp.dataclass.CurrentConditions
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.lang.Exception
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(private val api : Api): ViewModel() {
@@ -16,20 +15,38 @@ class SearchViewModel @Inject constructor(private val api : Api): ViewModel() {
         get() = _currentConditions
 
     private val _enableButton = MutableLiveData(false)
-    private val _showErrorDialog = MutableLiveData(false)
-
-    var zipCode: String? = null
-
-    val showErrorDialog: LiveData<Boolean>
-        get() = _showErrorDialog
-
     val enableButton: LiveData<Boolean>
         get() = _enableButton
 
+    private val _showErrorDialog = MutableLiveData(false)
+    val showErrorDialog: LiveData<Boolean>
+        get() = _showErrorDialog
+
+    private val _longitude: MutableLiveData<Double> = MutableLiveData()
+    val longitude: LiveData<Double>
+        get() = _longitude
+
+    private val _latitude: MutableLiveData<Double> = MutableLiveData()
+    val latitude: LiveData<Double>
+        get() = _latitude
+
+    private val _zipCode: MutableLiveData<String> = MutableLiveData()
+    val zipCode: LiveData<String>
+        get() = _zipCode
+
     fun updateZipCode(zipCode: String){
-        if(zipCode != this.zipCode){
-            this.zipCode = zipCode
+        if(zipCode != _zipCode.value){
+            _zipCode.value = zipCode
             _enableButton.value = isValidZipCode(zipCode)
+        }
+    }
+
+    fun updateLatLon(latitude: Double, longitude: Double){
+        if(_latitude.value != latitude){
+            _latitude.value = latitude
+        }
+        if(_longitude.value != longitude){
+            _longitude.value = longitude
         }
     }
 
@@ -38,9 +55,7 @@ class SearchViewModel @Inject constructor(private val api : Api): ViewModel() {
     }
 
     fun submitButtonClicked(){
-        Log.d(SearchFragment::class.simpleName, zipCode ?: "No Zip Yet")
-
-        if(zipCode != null && isValidZipCode(zipCode?:"00000")){
+        if(_zipCode.value != null && isValidZipCode(_zipCode.value?:"00000")){
             try {
                 loadData()
                 _showErrorDialog.value = false
@@ -50,9 +65,15 @@ class SearchViewModel @Inject constructor(private val api : Api): ViewModel() {
         }
     }
 
-    private fun loadData() = runBlocking{
-        launch {_currentConditions.value = zipCode?.let { api.getCurrentConditions(it) } }
+    fun locationButtonClicked(){
+        loadDataLonLat()
     }
 
+    private fun loadData() = runBlocking{
+        launch {_currentConditions.value = _zipCode.value?.let { api.getCurrentConditions(it) } }
+    }
 
+    private fun loadDataLonLat()= runBlocking{
+        launch {_currentConditions.value = api.getLatLonCurrentConditions(_latitude.value.toString(), _longitude.value.toString()) }
+    }
 }
